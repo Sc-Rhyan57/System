@@ -119,3 +119,43 @@ end
 
 CreateGitImage("link-da-imagem", "NomeImagem", workspace)
 ```
+
+## **SISTEMA DE MODELOS 3D**
+```luau
+local function GetGit3DModelID(githubLink, modelName)
+    local fileName = "customObject_Model_" .. tostring(modelName) .. ".obj"
+    
+    local success, modelData = pcall(function()
+        return game:HttpGet(githubLink)
+    end)
+    
+    if not success then
+        warn("Falha ao baixar o modelo 3D: " .. githubLink)
+        return nil
+    end
+    
+    writefile(fileName, modelData)
+    return (getcustomasset or getsynasset)(fileName)
+end
+
+local function CreateGit3DModel(githubLink, modelName, parent)
+    local modelId = GetGit3DModelID(githubLink, modelName)
+    
+    if modelId then
+        local model = Instance.new("Model")
+        model.Name = modelName
+        model.Parent = parent or workspace
+        
+        local part = Instance.new("Part")
+        part.Anchored = true
+        part.CanCollide = true
+        part.Parent = model
+        
+        return model, modelId
+    end
+    
+    return nil
+end
+
+CreateGit3DModel("link-do-modelo-3d", "NomeModelo", workspace)
+```
