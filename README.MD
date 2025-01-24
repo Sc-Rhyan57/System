@@ -82,3 +82,40 @@ end
 
 PlayGitVideo("link-do-video", "NomeVideo")
 ````
+
+
+### **SISTEMA DE IMAGEM**
+```luau
+local function GetGitImageID(githubLink, imageName)
+    local fileName = "customObject_Image_" .. tostring(imageName) .. ".png"
+    
+    local success, imageData = pcall(function()
+        return game:HttpGet(githubLink)
+    end)
+    
+    if not success then
+        warn("Falha ao baixar a imagem: " .. githubLink)
+        return nil
+    end
+    
+    writefile(fileName, imageData)
+    return (getcustomasset or getsynasset)(fileName)
+end
+
+local function CreateGitImage(githubLink, imageName, parent)
+    local imageId = GetGitImageID(githubLink, imageName)
+    
+    if imageId then
+        local image = Instance.new("ImageLabel")
+        image.Image = imageId
+        image.Size = UDim2.new(0, 300, 0, 300)
+        image.Parent = parent or workspace
+        
+        return image
+    end
+    
+    return nil
+end
+
+CreateGitImage("link-da-imagem", "NomeImagem", workspace)
+```
